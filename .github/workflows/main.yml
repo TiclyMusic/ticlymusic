@@ -2,7 +2,7 @@ name: Autobuild, Create Installers, and Weekly Release
 
 on:
   schedule:
-    - cron: '0 2 * * 1' # Runs every Monday at 02:00 UTC
+    - cron: '0 2 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      
+
       - name: Restore dependencies
         run: dotnet restore
 
@@ -27,16 +27,23 @@ jobs:
       - name: Publish (self-contained, win-x64)
         run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ./publish
 
-      - name: Download WiX Toolset
+      - name: Install WiX Toolset
+        run: choco install wix -y
+
+      - name: Add WiX to PATH
+        shell: pwsh
         run: |
-          choco install wix --version=3.11.2 -y
-          echo "##[add-path]C:\Program Files (x86)\WiX Toolset v3.11\bin"
+          $wixPath = "${Env:ProgramFiles(x86)}\WiX Toolset v3.11\bin"
+          echo "$wixPath" | Out-File -Append -FilePath $env:GITHUB_PATH
 
       - name: Build MSI installer with WiX
         run: |
           candle.exe installer/Product.wxs -o Product.wixobj
           light.exe Product.wixobj -o ../ticlymusic.msi
         working-directory: ./installer
+
+      - name: Install 7zip
+        run: choco install 7zip -y
 
       - name: Package EXE installer
         run: |
@@ -46,6 +53,7 @@ jobs:
 
       - name: Get version and date
         id: vars
+        shell: bash
         run: |
           VERSION="weekly-$(date +'%Y-%m-%d')"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
