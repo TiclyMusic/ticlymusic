@@ -13,7 +13,7 @@
     <Company>"Lori28167"</Company>
     <Product />
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <PlatformTarget>ARM64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
