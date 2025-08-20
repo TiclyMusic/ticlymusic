@@ -51,7 +51,6 @@ jobs:
           body: |
             Automated weekly build of the project with MSI and EXE installers.
           files: |
-            ticlymusic.msi
             ticlymusic.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
