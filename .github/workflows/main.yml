@@ -1,59 +1,78 @@
-name: Autobuild, Create Installers, and Weekly Release
+name: Build App and Package it in NSIS Installer
 
 on:
-  schedule:
-    - cron: '0 2 * * 1'
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  build-and-package:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
 
-      - name: Publish (self-contained, win-x64)
-        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ./publish
-        
-      - name: Install 7zip
-        run: choco install 7zip -y
+    - name: Publish self-contained app
+      run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ./publish
 
-      - name: Package EXE installer
-        run: |
-          cd publish
-          7z a ../ticlymusic.exe *
-          cd ..
+    - name: Install NSIS
+      run: choco install nsis -y
 
-      - name: Get version and date
-        id: vars
-        shell: bash
-        run: |
-          VERSION="weekly-$(date +'%Y-%m-%d')"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+    - name: Create installer directory if missing
+      run: |
+        if (!(Test-Path -Path "installer")) { New-Item -Path "installer" -ItemType Directory }
+      shell: pwsh
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.vars.outputs.version }}
-          name: Weekly autobuild ${{ steps.vars.outputs.version }}
-          body: |
-            Automated weekly build of the project with MSI and EXE installers.
-          files: |
-            ticlymusic.exe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Write basic NSIS script
+      run: |
+        Set-Content -Path installer\ticlymusic.nsi -Value @"
+        !define PRODUCT_NAME "ticlymusic"
+        !define PRODUCT_VERSION "1.0.0"
+        !define PRODUCT_PUBLISHER "Your Name"
+
+        RequestExecutionLevel admin
+
+        OutFile "\${PRODUCT_NAME}-setup.exe"
+        InstallDir "\$PROGRAMFILES\${PRODUCT_NAME}"
+
+        Page directory
+        Page instfiles
+
+        Section "Install"
+          SetOutPath "\$INSTDIR"
+          File "..\publish\ticlymusic.exe"
+          CreateShortCut "\$DESKTOP\${PRODUCT_NAME}.lnk" "\$INSTDIR\ticlymusic.exe"
+        SectionEnd
+        "@
+      shell: pwsh
+
+    - name: Build NSIS installer
+      run: makensis installer/ticlymusic.nsi
+
+    - name: Upload NSIS installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: ticlymusic-setup
+        path: ticlymusic-setup.exe
+
+    - name: Upload published EXE
+      uses: actions/upload-artifact@v4
+      with:
+        name: ticlymusic-exe
+        path: publish/ticlymusic.exe
