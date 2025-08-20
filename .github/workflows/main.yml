@@ -40,7 +40,7 @@ jobs:
         run: |
           candle.exe installer/Product.wxs -o Product.wixobj
           light.exe Product.wixobj -o ../ticlymusic.msi
-        working-directory: ./installer
+        working-directory: installer/
 
       - name: Install 7zip
         run: choco install 7zip -y
