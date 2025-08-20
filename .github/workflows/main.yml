@@ -26,22 +26,7 @@ jobs:
 
       - name: Publish (self-contained, win-x64)
         run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ./publish
-
-      - name: Install WiX Toolset
-        run: choco install wixtoolset -y
-
-      - name: Add WiX to PATH
-        shell: pwsh
-        run: |
-          $wixPath = "${Env:ProgramFiles(x86)}\WiX Toolset v3.11\bin"
-          echo "$wixPath" | Out-File -Append -FilePath $env:GITHUB_PATH
-
-      - name: Build MSI installer with WiX
-        run: |
-          candle.exe installer/Product.wxs -o Product.wixobj
-          light.exe Product.wixobj -o ../ticlymusic.msi
-        working-directory: installer
-
+        
       - name: Install 7zip
         run: choco install 7zip -y
 
