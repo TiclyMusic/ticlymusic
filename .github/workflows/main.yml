@@ -1,0 +1,64 @@
+name: Autobuild, Create Installers, and Weekly Release
+
+on:
+  schedule:
+    - cron: '0 2 * * 1' # Runs every Monday at 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish (self-contained, win-x64)
+        run: dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true --output ./publish
+
+      - name: Download WiX Toolset
+        run: |
+          choco install wix --version=3.11.2 -y
+          echo "##[add-path]C:\Program Files (x86)\WiX Toolset v3.11\bin"
+
+      - name: Build MSI installer with WiX
+        run: |
+          candle.exe installer/Product.wxs -o Product.wixobj
+          light.exe Product.wixobj -o ../ticlymusic.msi
+        working-directory: ./installer
+
+      - name: Package EXE installer
+        run: |
+          cd publish
+          7z a ../ticlymusic.exe *
+          cd ..
+
+      - name: Get version and date
+        id: vars
+        run: |
+          VERSION="weekly-$(date +'%Y-%m-%d')"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.version }}
+          name: Weekly autobuild ${{ steps.vars.outputs.version }}
+          body: |
+            Automated weekly build of the project with MSI and EXE installers.
+          files: |
+            ticlymusic.msi
+            ticlymusic.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
