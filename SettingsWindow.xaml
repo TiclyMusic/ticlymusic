@@ -1,0 +1,73 @@
+﻿<Window x:Class="TiclyMusic.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings - Ticly Music" Height="300" Width="400" 
+        Background="#e9e9e9" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="12" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="8">
+                            <ScrollViewer Margin="0" x:Name="PART_ContentHost" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="BorderBrush" Value="#CCCCCC" />
+            <Setter Property="Background" Value="#FFFFFF" />
+            <Setter Property="Foreground" Value="#565656" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <StackPanel>
+            <TextBlock Text="Ticly Music Settings" FontSize="18" FontWeight="Bold" 
+                      Foreground="#565656" Margin="0,0,0,20" HorizontalAlignment="Center" />
+
+            <!-- API Key Section -->
+            <GroupBox Header="YouTube API Configuration" Margin="0,0,0,15" Padding="10">
+                <StackPanel>
+                    <TextBlock Text="YouTube API Key:" Margin="0,0,0,5" FontWeight="SemiBold" Foreground="#565656" />
+                    <TextBox x:Name="ApiKeyTextBox" Height="30" Margin="0,0,0,10"
+                             Style="{StaticResource RoundedTextBoxStyle}"
+                             ToolTip="Enter your YouTube Data API v3 key" />
+                    <TextBlock Text="Get your API key from Google Cloud Console (YouTube Data API v3)" 
+                              FontSize="10" Foreground="#888" TextWrapping="Wrap" Margin="0,0,0,10" />
+                    <Button Content="Get API Key Guide" Click="ApiKeyGuide_Click" 
+                           Background="#2196F3" Foreground="White" Height="30" Width="150"
+                           Style="{StaticResource RoundedButtonStyle}" HorizontalAlignment="Left" />
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="Save" Width="80" Height="35" Click="SaveButton_Click"
+                        Background="#4CAF50" Foreground="White" Margin="0,0,10,0"
+                        Style="{StaticResource RoundedButtonStyle}" />
+                <Button Content="Cancel" Width="80" Height="35" Click="CancelButton_Click"
+                        Background="#F44336" Foreground="White"
+                        Style="{StaticResource RoundedButtonStyle}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
