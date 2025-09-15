@@ -143,7 +143,13 @@
 
             <!-- Help Text -->
             <TextBlock Text="Shortcuts: Space=Play/Pause, Ctrl+S=Stop, Ctrl+L=Loop, Ctrl+F=Search, Ctrl+,=Settings" 
-                      FontSize="9" Foreground="#888" HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" />
+                      FontSize="9" Foreground="#888" HorizontalAlignment="Center" Margin="0,10,0,5" TextWrapping="Wrap" />
+            
+            <!-- Status Bar -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                <Ellipse x:Name="StatusIndicator" Width="8" Height="8" Fill="#FFA500" Margin="0,0,5,0" />
+                <TextBlock x:Name="StatusText" Text="Ready - Configure API key in Settings" FontSize="9" Foreground="#666" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

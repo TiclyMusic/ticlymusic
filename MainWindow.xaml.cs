@@ -44,17 +44,36 @@ namespace TiclyMusic
             // Check if API key is configured
             if (string.IsNullOrEmpty(_config.YouTubeApiKey))
             {
+                StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Orange);
+                StatusText.Text = "Ready - Configure API key in Settings";
                 MessageBox.Show("YouTube API key is not configured. Please go to Settings to set up your API key.", 
                     "Configuration Required", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
+                StatusText.Text = "Ready - API key configured";
             }
         }
 
         private void LoadWindowSettings()
         {
-            this.Width = _config.WindowWidth;
-            this.Height = _config.WindowHeight;
-            this.Left = _config.WindowLeft;
-            this.Top = _config.WindowTop;
+            try
+            {
+                this.Width = Math.Max(400, _config.WindowWidth);
+                this.Height = Math.Max(400, _config.WindowHeight);
+                this.Left = Math.Max(0, _config.WindowLeft);
+                this.Top = Math.Max(0, _config.WindowTop);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading window settings: {ex.Message}");
+                // Use default values if loading fails
+                this.Width = 450;
+                this.Height = 550;
+                this.Left = 100;
+                this.Top = 100;
+            }
         }
 
         private void SaveWindowSettings()
@@ -181,12 +200,18 @@ namespace TiclyMusic
             }
 
             ResultsListBox.Items.Clear();
-            ResultsListBox.Items.Add("Searching...");
+            ResultsListBox.Items.Add("🔍 Searching...");
+            StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Blue);
+            StatusText.Text = "Searching YouTube...";
 
             try
             {
                 var youtubeResults = await SearchYouTubeAsync(searchText);
                 ResultsListBox.Items.Clear();
+                
+                // Reset status
+                StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
+                StatusText.Text = "Ready - API key configured";
 
                 if (youtubeResults != null && youtubeResults.Any())
                 {
@@ -203,6 +228,9 @@ namespace TiclyMusic
             catch (HttpRequestException httpEx)
             {
                 ResultsListBox.Items.Clear();
+                StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
+                StatusText.Text = "Error - Check API key";
+                
                 if (httpEx.Message.Contains("403") || httpEx.Message.Contains("forbidden"))
                 {
                     ResultsListBox.Items.Add("Invalid or expired YouTube API key.");
@@ -217,17 +245,23 @@ namespace TiclyMusic
             catch (InvalidOperationException configEx)
             {
                 ResultsListBox.Items.Clear();
+                StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Orange);
+                StatusText.Text = "Ready - Configure API key in Settings";
                 ResultsListBox.Items.Add(configEx.Message);
                 ResultsListBox.Items.Add("Click the Settings button (⚙) to configure your API key.");
             }
             catch (JsonException jsonEx)
             {
                 ResultsListBox.Items.Clear();
+                StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
+                StatusText.Text = "Error - Data format issue";
                 ResultsListBox.Items.Add($"Data format error: {jsonEx.Message}");
             }
             catch (Exception ex)
             {
                 ResultsListBox.Items.Clear();
+                StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
+                StatusText.Text = "Error occurred";
                 ResultsListBox.Items.Add($"Unexpected error during search: {ex.Message}");
             }
         }
@@ -371,6 +405,18 @@ namespace TiclyMusic
             {
                 // Settings were saved, reload config
                 _config = AppConfig.Load();
+                
+                // Update status indicator
+                if (string.IsNullOrEmpty(_config.YouTubeApiKey))
+                {
+                    StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Orange);
+                    StatusText.Text = "Ready - Configure API key in Settings";
+                }
+                else
+                {
+                    StatusIndicator.Fill = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Green);
+                    StatusText.Text = "Ready - API key configured";
+                }
             }
         }
 
