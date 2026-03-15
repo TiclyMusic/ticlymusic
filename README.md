@@ -75,15 +75,15 @@ dotnet run
 ## 🎨 UI/UX Improvements
 
 Recent enhancements include:
-- ✅ Modern color scheme with intuitive button colors
-- ✅ Draggable custom title bar
-- ✅ Visual feedback for loop mode (ON/OFF)
-- ✅ Volume percentage display
-- ✅ Keyboard shortcut help text
-- ✅ Clear search button
-- ✅ Settings window for easy configuration
-- ✅ Persistent window state and preferences
-- ✅ Improved error messages and user guidance
+- [x] Modern color scheme with intuitive button colors
+- [x] Draggable custom title bar
+- [x] Visual feedback for loop mode (ON/OFF)
+- [x] Volume percentage display
+- [x] Keyboard shortcut help text
+- [x] Clear search button
+- [x] Settings window for easy configuration
+- [x] Persistent window state and preferences
+- [x] Improved error messages and user guidance
 
 ## 🔒 Privacy & Security
 
