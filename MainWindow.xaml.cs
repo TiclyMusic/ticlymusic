@@ -703,7 +703,13 @@ namespace TiclyMusic
 
         public LyricLine? GetLineForTime(TimeSpan position)
         {
-            return Lines.LastOrDefault(line => position >= line.Start && (!line.End.HasValue || position < line.End.Value));
+            var match = Lines.LastOrDefault(line => position >= line.Start && (!line.End.HasValue || position < line.End.Value));
+            if (match != null)
+            {
+                return match;
+            }
+
+            return Lines.Count > 0 && position < Lines[0].Start ? Lines[0] : null;
         }
 
         public static LyricsDocument? Parse(string content)
