@@ -1,23 +1,25 @@
 # Ticly Music
 
-A modern, user-friendly YouTube music player for Windows built with WPF and .NET 8.
+A modern, user-friendly SpotiFLAC music player for Windows built with WPF and .NET 8.
 
 ## 🚀 Features
 
-- **YouTube Integration**: Search and play music directly from YouTube
+- **SpotiFLAC Integration**: Search Spotify and stream via your SpotiFLAC backend
 - **Modern UI**: Clean, intuitive interface with custom window controls
 - **Keyboard Shortcuts**: Full keyboard control for efficient usage
 - **Persistent Settings**: Remembers window position, size, and volume
 - **Loop Mode**: Continuous playback with visual feedback
 - **Volume Control**: Visual volume slider with percentage display
-- **Configuration**: Easy API key setup through settings window
+- **Configuration**: Easy Spotify/SpotiFLAC setup through settings window
+- **Synced Lyrics**: Letter-by-letter lyric highlighting (LRC or JSON)
 
 ## 🎯 Getting Started
 
 ### Prerequisites
 - Windows 10 or later
 - .NET 8.0 Runtime
-- YouTube Data API v3 key
+- Spotify Developer Client ID and Client Secret
+- SpotiFLAC backend base URL (stream + lyrics endpoints)
 
 ### Installation
 
@@ -27,17 +29,19 @@ A modern, user-friendly YouTube music player for Windows built with WPF and .NET
 
 ### First-Time Setup
 
-1. **Get YouTube API Key**:
-   - Visit [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select existing one
-   - Enable YouTube Data API v3
-   - Create credentials (API Key)
-   - Restrict the key to YouTube Data API v3 (recommended)
+1. **Create a Spotify App**:
+   - Visit [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+   - Create a new app
+   - Copy the Client ID and Client Secret
 
-2. **Configure API Key**:
+2. **Configure SpotiFLAC**:
+   - Ensure you have a SpotiFLAC backend that exposes `/stream` and `/lyrics` endpoints
+   - Copy the base URL (and API key if required)
+
+3. **Configure in App**:
    - Open Ticly Music
    - Click the settings button (⚙) in the title bar
-   - Enter your YouTube API key
+   - Enter your Spotify Client ID/Secret and SpotiFLAC base URL
    - Click "Save"
 
 ## 🎮 Keyboard Shortcuts
@@ -87,8 +91,8 @@ Recent enhancements include:
 
 ## 🔒 Privacy & Security
 
-- Your YouTube API key is stored locally in your user profile
-- No data is sent to third parties except YouTube for music search
+- Your Spotify/SpotiFLAC credentials are stored locally in your user profile
+- Data is sent to Spotify for search and to your SpotiFLAC backend for streaming/lyrics
 - Configuration files are stored in `%APPDATA%/TiclyMusic/`
 
 ## 🚧 Roadmap
@@ -110,4 +114,4 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 
 ---
 
-**Note**: This application requires a YouTube Data API v3 key to function. The key is free but has usage quotas. For personal use, the default quota should be sufficient.
+**Note**: This application requires Spotify client credentials and a SpotiFLAC backend endpoint to function.

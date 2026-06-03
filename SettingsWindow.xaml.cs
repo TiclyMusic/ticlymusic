@@ -17,12 +17,18 @@ namespace TiclyMusic
 
         private void LoadSettings()
         {
-            ApiKeyTextBox.Text = _config.YouTubeApiKey;
+            SpotifyClientIdTextBox.Text = _config.SpotifyClientId;
+            SpotifyClientSecretTextBox.Text = _config.SpotifyClientSecret;
+            SpotiFlacBaseUrlTextBox.Text = _config.SpotiFlacBaseUrl;
+            SpotiFlacApiKeyTextBox.Text = _config.SpotiFlacApiKey;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            _config.YouTubeApiKey = ApiKeyTextBox.Text.Trim();
+            _config.SpotifyClientId = SpotifyClientIdTextBox.Text.Trim();
+            _config.SpotifyClientSecret = SpotifyClientSecretTextBox.Text.Trim();
+            _config.SpotiFlacBaseUrl = SpotiFlacBaseUrlTextBox.Text.Trim();
+            _config.SpotiFlacApiKey = SpotiFlacApiKeyTextBox.Text.Trim();
             _config.Save();
             
             MessageBox.Show("Settings saved successfully!", "Settings", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -36,19 +42,19 @@ namespace TiclyMusic
             this.Close();
         }
 
-        private void ApiKeyGuide_Click(object sender, RoutedEventArgs e)
+        private void SpotifyGuide_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://developers.google.com/youtube/v3/getting-started",
+                    FileName = "https://developer.spotify.com/documentation/web-api",
                     UseShellExecute = true
                 });
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Unable to open browser: {ex.Message}\n\nPlease visit: https://developers.google.com/youtube/v3/getting-started", 
+                MessageBox.Show($"Unable to open browser: {ex.Message}\n\nPlease visit: https://developer.spotify.com/documentation/web-api", 
                     "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

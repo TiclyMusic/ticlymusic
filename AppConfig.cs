@@ -6,9 +6,12 @@ namespace TiclyMusic
 {
     public class AppConfig
     {
-        public string YouTubeApiKey { get; set; } = "";
+        public string SpotifyClientId { get; set; } = "";
+        public string SpotifyClientSecret { get; set; } = "";
+        public string SpotiFlacBaseUrl { get; set; } = "";
+        public string SpotiFlacApiKey { get; set; } = "";
         public double WindowWidth { get; set; } = 450;
-        public double WindowHeight { get; set; } = 550;
+        public double WindowHeight { get; set; } = 650;
         public double WindowLeft { get; set; } = 100;
         public double WindowTop { get; set; } = 100;
         public double Volume { get; set; } = 0.5;

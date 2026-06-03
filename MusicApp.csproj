@@ -32,8 +32,5 @@
     <Content Include="Resources\TiclyMusicIcon.ico" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="YoutubeExplode" Version="6.5.4" />
-  </ItemGroup>
 
 </Project>
